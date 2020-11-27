@@ -1,5 +1,5 @@
 # SUGAR
-Code for "SUGAR: Subgraph Neural Network with Reinforcement Pooling and Self-Supervised Mutual Information Mechanism""
+Code for "SUGAR: Subgraph Neural Network with Reinforcement Pooling and Self-Supervised Mutual Information Mechanism"
 # Overview
 - `train.py`: the core of our model, including the structure and the process of training.
 - `env.py, QLearning.py`: the code about RL method
