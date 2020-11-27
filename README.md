@@ -5,7 +5,7 @@ Code for "SUGAR: Subgraph Neural Network with Reinforcement Pooling and Self-Sup
 - `env.py, QLearning.py`: the code about RL method
 - `GCN.py, layers.py`: including the basic layers we used in the main model.
 - `dataset/`: including the dataset. [MUTAG](https://github.com/SunQingYun1996/SUGAR/tree/main/dataset/MUTAG), [DD](), [NCI1](), [NCI109](), [PTC_MR](), [ENZYMES](), [PROTEINS]() (the download link will be provided later).
-  - `'Raw/'`: the original data of the dataset
+  - `'RAW/'`: the original data of the dataset
   - `adj.npy`: the biggest Adjacency Matrix built from dataset
   - `graph_label.npy`: the label of every sub_graph
   - `sub_adj.npy`: the Adjacency Matrix of subgraph through sampling
