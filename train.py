@@ -438,11 +438,11 @@ def main(params):
             RL = QLearningTable(actions=list(range(env.n_actions)), learning_rate=0.02)
             k_record = []
             eva_acc_record = []
-            ########################################################################
+
             tbar = tqdm.tqdm(range(num_epochs))
             train_acc_record = []
             train_loss_record = []
-            ########################################################################
+
             for epoch in tbar:
                 train_loss = 0
                 train_acc = 0
@@ -463,11 +463,11 @@ def main(params):
                     if epoch >= 100:
                         k, reward = run_QL(env, RL, net, x_batch, x_batch_dsi, sadj_batch, t_batch, t_batch_mi, mask_batch, acc)
                         k_record.append(round(k, 4))
-                    #######################################################################
+
                     batch_num += 1
                     train_loss += loss
                     train_acc += acc
-                    #######################################################################
+
                     batch_num += 1
                     if i == 0:
                         all_mask = sub_true
@@ -477,23 +477,23 @@ def main(params):
                 test_dsi = test_x[:, :, idx, :]
                 eva_acc, eva_pred, eva_index, _, eva_embedding_origin, eva_embedding_topk, eva_selecnum, eva_a_index = net.evaluate(
                     test_x, test_dsi, test_sadj, test_t, test_t_mi, test_mask, k)
-                #################################################################################################
+
                 if eva_acc > max_fold_acc:
                     max_fold_acc = eva_acc
                     vir_acc_fold.append(eva_acc)
                     if not os.path.exists("ans"):
                         os.mkdir("ans")
-                ##################################################################################################
+
                 train_loss_record.append(train_loss / batch_num)
                 train_acc_record.append(eva_acc)
                 tbar.set_description_str("folds {}/{}".format(fold + 1, folds))
                 tbar.set_postfix_str("k:{:.2f}, loss: {:.2f}, best_acc:{:.2f}".format(k, train_loss / batch_num, max_fold_acc))
-                ##################################################################################################
+
                 try:
                     eva_acc_record.append(eva_acc)
                 except:
                     eva_acc_record = [eva_acc]
-                ##################################################################################################
+
             accs.append(max_fold_acc)
         accs = np.array(accs)
         mean = np.mean(accs) * 100
@@ -502,7 +502,7 @@ def main(params):
             "mean": mean,
             "std": std
         }
-        #########################################
+
         return ans
 
 
@@ -520,7 +520,7 @@ if __name__ == "__main__":
     parser.add_argument('--start_k', type=float, default=0.8)
 
     args = parser.parse_known_args()[0]
-    #########################
+
     params = {
     'dataset' : args.dataset,
     'folds' : 10,
@@ -533,5 +533,5 @@ if __name__ == "__main__":
     'MI_loss' : args.MI_loss,
     'start_k' : args.start_k,
     }
-    #########################
+
     ans = main(params)
