@@ -1,8 +1,6 @@
 import numpy as np
 import tensorflow as tf
 
-# import networkx as nx
-
 _LAYER_UIDS = {}
 
 
@@ -85,8 +83,7 @@ class GraphConvolution(Layer):
         # print(x.shape)
         self.weight = glorot([int(self.input.shape[-1]), int(self.output_dim)])
         pre_sup = tf.matmul(x, self.weight)
-        # print(x.shape)
-        # pre_sup = dot(tf.expand_dims(x,-1),[int(self.input.shape[-1]),int(self.output_dim)])
+
         output = pre_sup
         # bias
         if self.bias:
