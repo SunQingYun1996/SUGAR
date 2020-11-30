@@ -1,34 +1,25 @@
 # coding: utf-8
 
-'''
-Modified on 18/8/4.
-Copyright 2018. All rights reserved.
-License from MIT.
-
-'''
-
 import tensorflow as tf
 
 conv1d = tf.layers.conv1d
 
 
 def fcn_layer(
-        inputs,  # 输入数据
-        input_dim,  # 输入层神经元数量
-        output_dim,  # 输出层神经元数量
-        activation=None):  # 激活函数
+        inputs,
+        input_dim, 
+        output_dim,
+        activation=None): 
 
     W = tf.Variable(tf.truncated_normal([input_dim, output_dim], stddev=0.1))
-    # 以截断正态分布的随机初始化W
     b = tf.Variable(tf.zeros([output_dim]))
-    # 以0初始化b
     XWb = tf.matmul(inputs, W) + b  # Y=WX+B
 
-    if (activation == None):  # 默认不使用激活函数
+    if (activation == None):
         outputs = XWb
     else:
-        outputs = activation(XWb)  # 代入参数选择的激活函数
-    return outputs  # 返回
+        outputs = activation(XWb)
+    return outputs
 
 
 def relu(x, alpha=0., max_value=None):
@@ -51,7 +42,6 @@ def attn_head(seq, out_sz, bias_mat, activation, in_drop=0.0, coef_drop=0.5, res
             seq = tf.nn.dropout(seq, 1.0 - in_drop)
 
         seq_fts = tf.layers.conv1d(seq, out_sz, 1, use_bias=False)
-        # print("seq_fts",seq_fts)
 
         # simplest self-attention possible
         f_1 = tf.layers.conv1d(seq_fts, 1, 1)
@@ -61,7 +51,6 @@ def attn_head(seq, out_sz, bias_mat, activation, in_drop=0.0, coef_drop=0.5, res
         coefs = tf.nn.softmax(tf.nn.leaky_relu(logits))  # )
         # coefs = tf.matmul(tf.matrix_diag(1/(tf.reduce_sum(logits,axis = -1)+0.01)),
         # logits)
-        # print("coefs",coefs)
 
         if coef_drop != 0.0:
             coefs = tf.nn.dropout(coefs, 1.0 - coef_drop)
@@ -79,10 +68,6 @@ def attn_head(seq, out_sz, bias_mat, activation, in_drop=0.0, coef_drop=0.5, res
                 seq_fts = ret + seq
 
         return activation(vals)  # activation
-
-
-# Experimental sparse attention head (for running on datasets such as Pubmed)
-# N.B. Because of limitations of current TF implementation, will work _only_ if batch_size = 1!
 
 
 def sp_attn_head(seq, out_sz, adj_mat, activation, nb_nodes, in_drop=0.0, coef_drop=0.0, residual=False):
@@ -149,10 +134,8 @@ class BaseGAttN:
         vars = tf.trainable_variables()
         lossL2 = tf.add_n([tf.nn.l2_loss(v) for v in vars if v.name not
                            in ['bias', 'gamma', 'b', 'g', 'beta']]) * l2_coef
-        # optimizer
         opt = tf.train.AdamOptimizer(learning_rate=lr)
 
-        # training op
         train_op = opt.minimize(loss + lossL2)
 
         return train_op
@@ -172,20 +155,12 @@ class BaseGAttN:
 class GAT(BaseGAttN):
     def inference(self, inputs, nb_classes, bias_mat, hid_units,
                   n_heads, activation=tf.nn.elu, residual=False, k=0.5):
-        # print("inputs", inputs.shape)  # (?, 28, 160)
-
-        # print(inputs.shape[1].value, type(inputs.shape[1].value))
-        # 这里就是最后选取的k的数目 (k)
 
         select_num = tf.cast(inputs.shape[1].value * k, dtype=tf.int32)
-        # print(select_num)
 
         # mean_sum = tf.reduce_sum(tf.square(inputs), -1)
-        # 这里是做project投影
         p = tf.Variable(tf.truncated_normal([int(inputs.shape[-1]), 1], stddev=0.1))
         mean_sum = tf.reshape(tf.matmul(inputs, p) / tf.reduce_sum(tf.square(p)), [-1, int(inputs.shape[1])])
-
-        # print("mean_sum", mean_sum.shape) # (?, 28) , 28 是子图的数量，也就是说inputs的160维就是嵌入
 
         a_top, a_top_idx = tf.nn.top_k(mean_sum, select_num)
 
@@ -213,7 +188,6 @@ class GAT(BaseGAttN):
             attns.append(attn_head(inputs, bias_mat=bias_mat,
                                    out_sz=hid_units[0], activation=activation, residual=False))
         h_1 = tf.concat(attns, axis=-1)
-        # print(h_1)
         for i in range(1, len(hid_units)):
             attns = []
             for _ in range(n_heads[i]):
@@ -226,8 +200,6 @@ class GAT(BaseGAttN):
 
         logits = tf.layers.dense(
             inputs=h_1, units=nb_classes, activation=tf.nn.leaky_relu)
-        # logits = fcn_layer(h_1,int(h_1.shape[-1]),nb_classes,activation=tf.nn.leaky_relu)
         a_index = tf.tile(tf.expand_dims(result, -1), (1, 1, logits.shape[-1]))
         logits = a_index * logits
-        # logits = tf.nn.softmax(logits)
         return a_index, h_1, logits, inputs, select_num, a_top_idx_1
