@@ -43,5 +43,4 @@ classes.
  --sg_encoder SG_ENCODER(GIN, GCN, GAT, SAGE)
  --MI_loss MI_LOSS
  --start_k START_K
- --step_size STEP_SIZE
 ```
