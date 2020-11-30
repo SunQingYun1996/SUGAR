@@ -462,12 +462,7 @@ def main(params):
                         learning_rate, momentum,
                         k)
                     if epoch >= 100:
-                        if RL_step == 1:
-                            k, reward = run_QL_1step(env, RL, net, x_batch, x_batch_dsi, sadj_batch, t_batch,
-                                                     t_batch_mi,
-                                                     mask_batch, acc)
-                        elif RL_step == 2:
-                            k, reward = run_QL_2step(env, RL, net, x_batch, x_batch_dsi, sadj_batch, t_batch,
+                        k, reward = run_QL(env, RL, net, x_batch, x_batch_dsi, sadj_batch, t_batch,
                                                      t_batch_mi,
                                                      mask_batch, acc)
                         k_record.append(round(k, 4))
