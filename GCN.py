@@ -1,8 +1,6 @@
 import numpy as np
 import tensorflow as tf
 
-# import networkx as nx
-
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.FATAL)
 
 _LAYER_UIDS = {}
@@ -77,13 +75,10 @@ class GraphConvolution(Layer):
         return outputs
 
     def _call(self, inputs):
-        # print(inputs)
         x = inputs
         x = tf.nn.dropout(x, self.dropout)
 
-        # convolve
         x = tf.matmul(self.adj_matrix, x)
-        # print(x.shape)
         self.weight = glorot([int(self.input.shape[-1]), int(self.output_dim)])
         pre_sup = tf.matmul(x, self.weight)
         # pre_sup = dot(tf.expand_dims(x,-1),[int(self.input.shape[-1]),int(self.output_dim)])
