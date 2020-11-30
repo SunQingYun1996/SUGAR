@@ -521,6 +521,7 @@ if __name__ == "__main__":
     parser.add_argument('--sg_encoder', type=str, default='GCN')
     parser.add_argument('--MI_loss', type=float, default=0.8)
     parser.add_argument('--start_k', type=float, default=0.8)
+    parser.add_argument('--step_size', type=int, default=1)
 
     args = parser.parse_known_args()[0]
     #########################
@@ -535,6 +536,7 @@ if __name__ == "__main__":
     'sg_encoder' : args.sg_encoder,
     'MI_loss' : args.MI_loss,
     'start_k' : args.start_k,
+    'step_size': args.step_size,
     }
     #########################
     ans = main(params)
