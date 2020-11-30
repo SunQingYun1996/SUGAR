@@ -13,7 +13,7 @@ import tqdm
 import layers
 import time
 from QLearning import *
-from env import *
+from env import GNN_env, GNN_env_sub
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -434,7 +434,7 @@ def main(params):
                                           feature.shape[0], label_idx)
             max_fold_acc = 0
             k_step_value = round(1.0 / net.num_subg, 4)
-            env = GNN_env1(action_value=k_step_value,
+            env = GNN_env_sub(action_value=k_step_value,
                            subgraph_num=net.num_subg, initial_k=k)
             RL = QLearningTable(actions=list(range(env.n_actions)), learning_rate=0.02)
             k_record = []

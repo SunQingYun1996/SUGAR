@@ -5,7 +5,6 @@ class GNN_env1(object):
     def __init__(self, action_value, subgraph_num, initial_k):
         super(GNN_env1, self).__init__()
         self.action_space = ['add', 'minus']
-        # self.action_space = ['add', 'minus', 'equal']
         self.action_value = action_value
         self.n_actions = len(self.action_space)
         self.n_features = subgraph_num
