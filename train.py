@@ -13,7 +13,7 @@ import tqdm
 import layers
 import time
 from QLearning import *
-from env2 import *
+from env import *
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -283,8 +283,6 @@ class HGANP(object):
             residual, self.top_k)
 
     def bilinear(self, x, y, out_dim, flag):
-        # print(x.shape)
-        # print(y.shape)
         w = tf.ones([out_dim, x.shape[-1], y.shape[-1]])
         w = tf.expand_dims(w, 0)
         w = tf.tile(w, tf.stack([x.shape[1], 1, 1, 1]))
@@ -292,7 +290,6 @@ class HGANP(object):
         x = tf.expand_dims(x, 2)
         x = tf.expand_dims(x, 4)
         x = tf.tile(x, tf.stack([1, 1, out_dim, 1, y.shape[-1]]))
-        # print("x:",x.shape)
         tmp = tf.reduce_sum(tf.multiply(x, w), 3)
 
         y = tf.expand_dims(y, 2)
@@ -319,7 +316,6 @@ class HGANP(object):
 
         with tf.variable_scope('fn'):
             vote_layer = tf.reduce_sum(self.gat_result, axis=1)
-            # vote_layer size should be (batch_size, class_size)
             self.loss = tf.compat.v1.losses.sparse_softmax_cross_entropy(
                 labels=self.labels, logits=vote_layer)
 
