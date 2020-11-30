@@ -81,8 +81,6 @@ def divide_train_test(data, label, sub_adj, sub_mask, test_begin_idx, test_end_i
     train_t_dsi = label[dsi_idx]
     train_sadj_dsi = sub_adj[dsi_idx]
     train_mask_dsi = sub_mask[dsi_idx]
-    # print('sadj:',train_sadj_dsi.shape)
-    # print('train_sadj',train_sadj.shape)
 
     test_x = data[test_begin_idx:test_end_idx]
     test_t = label[test_begin_idx:test_end_idx]
@@ -113,7 +111,6 @@ def load_batch(x, sadj, t, mask, train_x_dsi, train_sadj_dsi, train_t_dsi, train
 
 class HGANP(object):
     def __init__(self, session, embedding, ncluster, num_subg, subg_size, batch_size, learning_rate, momentum):
-        # num_subg子图的数目，subg_size所有子图的size
         self.sess = session
         self.ncluster = ncluster
         self.embedding = embedding
@@ -135,14 +132,12 @@ class HGANP(object):
         self.pred = tf.to_int32(tf.argmax(self.probabilities, 1))
         correct_prediction = tf.equal(self.pred, self.labels)
         self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-        # computer true sub
-        ##print('Forward propagation finished.')
 
         self.optimizer = tf.compat.v1.train.MomentumOptimizer(
-            self.lr, self.mom).minimize(self.loss + self.l2)  # +(self.k-24)*(self.k-24))
+            self.lr, self.mom).minimize(self.loss + self.l2)
         self.init = tf.global_variables_initializer()
         self.saver = tf.compat.v1.train.Saver(tf.global_variables())
-        ##print('Backward propagation finished.')
+
 
     def mlp(self,
             inputs,
@@ -153,7 +148,7 @@ class HGANP(object):
         W = tf.Variable(tf.truncated_normal(
             [input_dim, output_dim], stddev=0.1))
         b = tf.Variable(tf.zeros([output_dim]))
-        XWb = tf.matmul(inputs, W) + b  # Y=WX+B
+        XWb = tf.matmul(inputs, W) + b
 
         if (activation == None):
             outputs = XWb
@@ -403,7 +398,6 @@ def main(params):
     ###############################################
     """
     ###############################################
-    # 根据参数字典定义参数
     global max_pool
     global MI_loss
     global sg_encoder
@@ -471,7 +465,7 @@ def main(params):
                         t_batch_mi, mask_batch,
                         learning_rate, momentum,
                         k)
-                    if epoch >= 100: # start RL after 100 iters
+                    if epoch >= 100:
                         if RL_step == 1:
                             k, reward = run_QL_1step(env, RL, net, x_batch, x_batch_dsi, sadj_batch, t_batch,
                                                      t_batch_mi,
