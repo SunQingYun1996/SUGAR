@@ -47,14 +47,6 @@ classes.
 
 # Reference
 ````
-@inproceedings{wang2020gcn,
-  title={AM-GCN: Adaptive Multi-channel Graph Convolutional Networks},
-  author={Wang, Xiao and Zhu, Meiqi and Bo, Deyu and Cui, Peng and Shi, Chuan and Pei, Jian},
-  booktitle={Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
-  pages={1243--1253},
-  year={2020}
-}
-
 @nproceedings{sun2021sugar,
   title={SUGAR: Subgraph Neural Network with Reinforcement Pooling and Self-Supervised Mutual Information Mechanism},
   author={Sun, Qingyun and Li, Jianxin and Peng, Hao and Wu, Jia and Ning, Yuanxing and Yu, Phillip S and He, Lifang},
